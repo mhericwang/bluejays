@@ -1,9 +1,6 @@
-from flask import Flask
+from src import create_app
 
-
-app = Flask(__name__)
-
-app.config["DEBUG"] = True
+app = create_app()
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    app.run(host="0.0.0.0", port=8080, debug=True)
