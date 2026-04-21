@@ -12,6 +12,13 @@ class MLBService:
         return response.json()
 
     @staticmethod
+    def get_teams():
+        """
+        return all active mlb teams
+        """
+        return MLBService.get("/teams", params={"sportId": 1})
+
+    @staticmethod
     def get_standings():
         """
         return all standings data for both american league and national league
@@ -25,7 +32,7 @@ class MLBService:
         """
         params = {"leaderCategories": "homeRuns,onBasePlusSlugging", "statGroup": "hitting"}
         if team_id is not None:
-            params["teamId"] = f"{team_id}"
+            params["teamId"] = team_id
         return MLBService.get("/stats/leaders", params=params)
 
     @staticmethod
@@ -35,7 +42,7 @@ class MLBService:
         """
         params = {"leaderCategories": "strikeouts,earnedRunAverage", "statGroup": "pitching"}
         if team_id is not None:
-            params["teamId"] = f"{team_id}"
+            params["teamId"] = team_id
         return MLBService.get("/stats/leaders", params=params)
 
     @staticmethod
@@ -50,8 +57,16 @@ class MLBService:
         """
         return details about player stats and gamelogs
         """
-        response = MLBService.get(f"/people/{player_id}", params={"hydrate": "stats(type=[yearByYear,yearByYearAdvanced,projected,career]),currentTeam"})
-        gamelog_response = MLBService.get(f"/people/{player_id}", params={"hydrate": "stats(type=[gamelog],limit=7)"})
-        response["gamelog"] = gamelog_response["stats"]["splits"]
+        response = MLBService.get(
+            f"/people/{player_id}",
+            params={"hydrate": "stats(type=[yearByYear,yearByYearAdvanced,projected,career]),currentTeam"},
+        )
+        gamelog_response = MLBService.get(
+            f"/people/{player_id}", params={"hydrate": "stats(type=[gamelog],limit=7)"}
+        )
 
-        return response
+        player = response["people"][0]
+
+        player["stats"].append(gamelog_response["people"][0]["stats"][0])
+
+        return player
