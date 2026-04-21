@@ -23,7 +23,35 @@ class MLBService:
         """
         return all standings data for both american league and national league
         """
-        return MLBService.get("/standings", {"leagueId": "103,104"})
+        # helper to find split records easily
+        def find_split_records(records, t):
+            return next(record for record in records["records"]["splitRecords"] if record["type"] == t)
+
+        # processing return data to easily display on frontend
+        standings = {}
+        raw_standings = MLBService.get("/standings", {"leagueId": "103,104", "hydrate": "division,team"})
+        for division in raw_standings["records"]:
+            division_name = division["division"]["nameShort"]
+            teams = []
+            for team_record in division["teamRecords"]:
+                last_ten = find_split_records(team_record, "lastTen")
+                teams.append(
+                    {
+                        "team": team_record["team"]["id"],
+                        "wins": team_record["wins"],
+                        "losses": team_record["losses"],
+                        "winningPercentage": team_record["winningPercentage"],
+                        "gamesBack": team_record["gamesBack"],
+                        "lastTen": f"{last_ten["wins"]}-{last_ten["losses"]}",
+                        "runDifferential": team_record["runDifferential"],
+                        "home": find_split_records(team_record, "home")["pct"],
+                        "away": find_split_records(team_record, "away")["pct"],
+                        "oneRun": find_split_records(team_record, "oneRun")["pct"],
+                        "extraInning": find_split_records(team_record, "extraInning")["pct"],
+                    }
+                )
+            standings[division_name] = teams
+        return standings
 
     @staticmethod
     def get_hitting_leaders(team_id=None):
