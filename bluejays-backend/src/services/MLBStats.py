@@ -1,6 +1,6 @@
 import requests
 from definitions import MLB_STATS_API_URL
-from ..helpers import format_leader_stats
+from ..helpers import format_hitter_stats_and_gamelog, format_leader_stats, format_pitcher_stats_and_gamelog
 
 
 class MLBService:
@@ -118,23 +118,27 @@ class MLBService:
                     stat for stat in player["person"]["stats"] if stat["group"]["displayName"] == "pitching"
                 )["splits"][0]["stat"]
                 player_info = {**player_info, **pitching_stats}
-                player_info["strikeOutsPercentage"] = round(
-                    (pitching_stats["strikeOuts"] / pitching_stats["battersFaced"]) * 100, 1
-                )
-                player_info["baseOnBallsPercentage"] = round(
-                    (pitching_stats["baseOnBalls"] / pitching_stats["battersFaced"]) * 100, 1
-                )
+                player_info["strikeOutsPercentage"] = f"{round(
+                    (pitching_stats['strikeOuts'] / pitching_stats['battersFaced']) * 100, 1
+                )}%"
+                player_info["baseOnBallsPercentage"] = f"{round(
+                    (pitching_stats['baseOnBalls'] / pitching_stats['battersFaced']) * 100, 1
+                )}%"
                 roster["pitchers"].append(player_info)
             else:
                 hitting_stats = next(
                     stat for stat in player["person"]["stats"] if stat["group"]["displayName"] == "hitting"
                 )["splits"][0]["stat"]
                 player_info = {**player_info, **hitting_stats}
-                player_info["strikeOutsPercentage"] = round(
-                    (hitting_stats["strikeOuts"] / hitting_stats["plateAppearances"]) * 100, 1
+                player_info["strikeOutsPercentage"] = (
+                    f"{round(
+                    (hitting_stats['strikeOuts'] / hitting_stats['plateAppearances']) * 100, 1
+                )}%"
                 )
-                player_info["baseOnBallsPercentage"] = round(
-                    (hitting_stats["baseOnBalls"] / hitting_stats["plateAppearances"]) * 100, 1
+                player_info["baseOnBallsPercentage"] = (
+                    f"{round(
+                    (hitting_stats['baseOnBalls'] / hitting_stats['plateAppearances']) * 100, 1
+                )}%"
                 )
                 roster["hitters"].append(player_info)
         return roster
@@ -146,14 +150,38 @@ class MLBService:
         """
         response = MLBService.get(
             f"/people/{player_id}",
-            params={"hydrate": "stats(type=[yearByYear,yearByYearAdvanced,projected,career]),currentTeam"},
+            params={"hydrate": "stats(type=[yearByYear,projected,career]),currentTeam"},
         )
         gamelog_response = MLBService.get(
             f"/people/{player_id}", params={"hydrate": "stats(type=[gamelog],limit=7)"}
         )
 
-        player = response["people"][0]
+        raw_player = response["people"][0]
+        raw_gamelog = gamelog_response["people"][0]["stats"][0]
 
-        player["stats"].append(gamelog_response["people"][0]["stats"][0])
+
+        player = {
+            "id": raw_player["id"],
+            "firstName": raw_player["firstName"],
+            "lastName": raw_player["lastName"],
+            "age": raw_player["currentAge"],
+            "position": raw_player["primaryPosition"]["abbreviation"],
+            "mlbDebutDate": raw_player["mlbDebutDate"],
+            "height": raw_player["height"],
+            "weight": raw_player["weight"],
+            "batsAndThrows": f"{raw_player['batSide']['code']}/{raw_player['pitchHand']['code']}",
+            "teamName": raw_player["currentTeam"]["name"],
+            "headshot": f"https://content.mlb.com/images/headshots/current/60x60/{raw_player['id']}@2x.png",
+            "yearlyStats": [],
+            "gamelogs": [],
+        }
+
+        if raw_player["primaryPosition"]["name"] != "Pitcher":
+            formatted_data = format_hitter_stats_and_gamelog(raw_player["stats"], raw_gamelog)
+        else:
+            formatted_data = format_pitcher_stats_and_gamelog(raw_player["stats"], raw_gamelog)
+
+        player["yearlyStats"] = formatted_data["yearlyStats"]
+        player["gamelogs"] = formatted_data["gamelogs"]
 
         return player

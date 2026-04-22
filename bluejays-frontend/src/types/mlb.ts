@@ -121,3 +121,138 @@ export interface TeamRoster {
   hitters: RosterHitter[];
   pitchers: RosterPitcher[];
 }
+
+export interface BasePlayer {
+  id: number;
+  firstName: string;
+  lastName: string;
+  age: number;
+  batsAndThrows: string;
+  position: string;
+  teamName: string;
+  height: string;
+  weight: number;
+  mlbDebutDate: string;
+  headshot: string;
+}
+
+export interface HitterGameLog {
+  date: string;
+  opponentId: number;
+  opponentLogo: string;
+  summary: string;
+
+  plateAppearances: number;
+  hits: number;
+  rbi: number;
+  runs: number;
+
+  doubles: number;
+  triples: number;
+  homeRuns: number;
+
+  stolenBases: number;
+  caughtStealing: number;
+
+  intentionalWalks: number;
+  hitByPitch: number;
+}
+
+export interface PitcherGameLog {
+  date: string;
+  opponentId: number;
+  opponentLogo: string;
+  summary: string;
+
+  battersFaced: number;
+  numberOfPitches: number;
+
+  hits: number;
+  doubles: number;
+  triples: number;
+  homeRuns: number;
+
+  intentionalWalks: number;
+  hitByPitch: number;
+  wildPitches: number;
+
+  avg: string;
+}
+
+export type Year = string | null;
+
+export interface HitterYearlyStats {
+  year: Year;
+
+  teamId: number | null;
+  teamLogo: string | null;
+  teamName: string;
+
+  gamesPlayed: number;
+  plateAppearances: number;
+
+  hits: number;
+  runs: number;
+  rbi: number;
+
+  doubles: number;
+  triples: number;
+  homeRuns: number;
+
+  avg: string;
+  obp: string;
+  slg: string;
+  ops: string;
+  babip: string;
+
+  strikeOuts: number;
+  strikeOutsPercentage: string;
+
+  baseOnBalls: number;
+  baseOnBallsPercentage: string;
+
+  stolenBases: number;
+  caughtStealing: number;
+}
+
+export interface PitcherYearlyStats {
+  year: Year;
+
+  teamId: number | null;
+  teamLogo: string | null;
+  teamName: string;
+
+  gamesPitched: number;
+  inningsPitched: string;
+
+  wins: number;
+  losses: number;
+
+  era: string;
+  whip: string;
+
+  hits: number;
+  homeRuns: number;
+  hitByPitch: number;
+
+  strikeOuts: number;
+  strikeOutsPercentage: string;
+
+  baseOnBalls: number;
+  baseOnBallsPercentage: string;
+
+  battersFaced: number;
+  strikeoutsPer9Inn: string;
+
+  avg: string;
+}
+
+export interface Hitter extends BasePlayer {
+  gamelogs: HitterGameLog[];
+  yearlyStats: HitterYearlyStats[];
+}
+
+export interface Pitcher extends BasePlayer {
+  gamelogs: PitcherGameLog[];
+  yearlyStats: PitcherYearlyStats[];
+}

@@ -100,10 +100,6 @@ function TeamRosterTable({ columns, data }: TeamRosterTableProps) {
                   ) : (
                     row[col.field]
                   )}
-                  {col.field === "strikeOutsPercentage" ||
-                  col.field === "baseOnBallsPercentage"
-                    ? "%"
-                    : ""}
                 </TableCell>
               ))}
             </TableRow>
