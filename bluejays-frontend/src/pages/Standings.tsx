@@ -1,28 +1,10 @@
 import { Box, Grid, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
-import { fetchStandings } from "../api/api";
 import StandingsTable from "../components/StandingsTable";
+import { useTeams } from "../hooks/useTeams";
 
 interface StandingsProps {
   simplified?: boolean;
 }
-
-interface StandingsRow {
-  team: number;
-  wins: number;
-  losses: number;
-  winningPercentage: string;
-  gamesBack: string;
-  lastTen: string;
-  runDifferential: number;
-  home?: string;
-  away?: string;
-  oneRun?: string;
-  extraInning?: string;
-  [key: string]: string | number | undefined;
-}
-
-type StandingsByDivision = Record<string, StandingsRow[]>;
 
 const SIMPLIFIED_COLS = [
   { field: "team", header: "" },
@@ -43,19 +25,9 @@ const DETAILED_COLS = [
 ];
 
 function Standings({ simplified }: StandingsProps) {
-  const [data, setData] = useState<StandingsByDivision | null>(null);
-  const [loading, setLoading] = useState(true);
+  const teamsData = useTeams()
 
-  useEffect(() => {
-    fetchStandings()
-      .then(setData)
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) return <Typography>Loading...</Typography>;
-
-  if (!data) return <Typography>No standings available.</Typography>;
+  if (!teamsData) return <Typography>No standings available.</Typography>;
 
   return (
     <Box>
@@ -63,7 +35,7 @@ function Standings({ simplified }: StandingsProps) {
         Standings
       </Typography>
       <Grid container spacing={4}>
-        {Object.entries(data).map(([division, teams]) => (
+        {Object.entries(teamsData).map(([division, teams]) => (
           <Grid
             key={division}
             size={{ md: 6 }}

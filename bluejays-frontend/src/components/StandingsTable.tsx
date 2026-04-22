@@ -1,5 +1,6 @@
 import Paper from "@mui/material/Paper";
 import {
+  Box,
   Table,
   TableBody,
   TableCell,
@@ -7,10 +8,11 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import type { Team } from "../types/mlb";
 
 interface StandingsTableProps {
   columns: { field: string; header: string }[];
-  data: Record<string, string | number>[];
+  data: Team[];
   division: string;
 }
 
@@ -33,13 +35,24 @@ function StandingsTable({ columns, data, division }: StandingsTableProps) {
         </TableHead>
         <TableBody>
           {data.map((row) => (
-            <TableRow key={row.name}>
+            <TableRow key={row.team}>
               {columns.map((col) => (
                 <TableCell
                   key={col.field}
                   align={col.field === "team" ? "left" : "right"}
                 >
-                  {row[col.field]}
+                  {col.field === "team" ? (
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <img
+                        src={row.logo}
+                        alt={row.abbreviation}
+                        style={{ width: 24, height: 24, marginRight: 8 }}
+                      />
+                      {row.abbreviation}
+                    </Box>
+                  ) : (
+                    row[col.field]
+                  )}
                 </TableCell>
               ))}
             </TableRow>
