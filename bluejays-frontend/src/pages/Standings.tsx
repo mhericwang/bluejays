@@ -30,7 +30,7 @@ function Standings({ simplified }: StandingsProps) {
   if (!teamsData) return <Typography>No standings available.</Typography>;
 
   return (
-    <Box>
+    <Box sx={{ mb: 1 }}>
       <Typography variant="h4" sx={{ mb: 1, fontWeight: 500, fontSize: 24 }}>
         Standings
       </Typography>

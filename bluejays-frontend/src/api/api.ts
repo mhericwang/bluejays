@@ -18,3 +18,15 @@ export const fetchStatLeaders = async (teamId?: number) => {
   if (!response.ok) throw new Error("Failed to fetch stat leaders");
   return response.json();
 };
+
+export const fetchNews = async (teamName?: string) => {
+  if (teamName) {
+    const params = `?team_name=${teamName}`
+    const response = await fetch(`${API_URL}/news${params}`);
+    if (!response.ok) throw new Error("Failed to fetch team news");
+    return response.json();
+  }
+  const response = await fetch(`${API_URL}/news`);
+  if (!response.ok) throw new Error("Failed to fetch news");
+  return response.json();
+};
