@@ -1,15 +1,16 @@
 import {
   Box,
-  Button,
-  Container,
   CssBaseline,
-  Paper,
   ThemeProvider,
   Typography,
   createTheme,
 } from "@mui/material";
 import TopNavBar from "./components/TopNavBar";
 import Standings from "./pages/Standings";
+import { Routes, Route } from "react-router-dom";
+import HomePage from "./pages/Home";
+import Leaders from "./pages/Leaders";
+import Teams from "./pages/Teams";
 
 const theme = createTheme({
   typography: {
@@ -34,7 +35,7 @@ const theme = createTheme({
     MuiContainer: {
       styleOverrides: {
         root: {
-          maxWidth: 1500,
+          maxWidth: "1500px",
           width: "100%",
           marginLeft: "auto",
           marginRight: "auto",
@@ -50,68 +51,19 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Container>
-        <Box component="main" sx={{ py: { xs: 2, md: 3 } }}>
-          <TopNavBar />
-          <Typography
-            variant="h3"
-            component="h1"
-            sx={{ fontWeight: 700, my: 2 }}
-          >
-            Dashboard
-          </Typography>
-          <Standings simplified />
-
-          <Paper sx={{ p: { xs: 3, md: 4 }, borderRadius: 4, boxShadow: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-              App scaffold
-            </Typography>
-            <Box
-              sx={{
-                display: "grid",
-                gap: 2,
-                gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-              }}
-            >
-              <Box
-                sx={{
-                  p: 2,
-                  border: "1px solid",
-                  borderColor: "divider",
-                  borderRadius: 2,
-                }}
-              >
-                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 600 }}>
-                  Standings
-                </Typography>
-                <Typography color="text.secondary">
-                  Render league standings and division data here.
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  p: 2,
-                  border: "1px solid",
-                  borderColor: "divider",
-                  borderRadius: 2,
-                }}
-              >
-                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 600 }}>
-                  News
-                </Typography>
-                <Typography color="text.secondary">
-                  Render team news feeds and headlines here.
-                </Typography>
-              </Box>
-            </Box>
-
-            <Box sx={{ mt: 3, display: "flex", flexWrap: "wrap", gap: 2 }}>
-              <Button variant="contained">Get started</Button>
-              <Button variant="outlined">View structure</Button>
-            </Box>
-          </Paper>
-        </Box>
-      </Container>
+      <Box component="main" sx={{ py: { xs: 2, md: 3 }, px: { xs: 3, md: 6 } }}>
+        <TopNavBar />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/standings" element={<Standings />} />
+          <Route path="/leaders" element={<Leaders />} />
+          <Route path="/teams/:teamId" element={<Teams />} />
+          <Route
+            path="*"
+            element={<Typography sx={{ mt: 4 }}>Page not found.</Typography>}
+          />
+        </Routes>
+      </Box>
     </ThemeProvider>
   );
 }

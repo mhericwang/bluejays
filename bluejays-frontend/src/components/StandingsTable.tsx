@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Paper from "@mui/material/Paper";
 import {
   Table,
@@ -11,20 +10,21 @@ import {
 
 interface StandingsTableProps {
   columns: { field: string; header: string }[];
-  data: any[];
+  data: Record<string, string | number>[];
   division: string;
 }
 
 function StandingsTable({ columns, data, division }: StandingsTableProps) {
   return (
     <TableContainer component={Paper}>
-      <Table>
+      <Table size="small">
         <TableHead>
-          <TableRow>
+          <TableRow sx={{ backgroundColor: "primary.main" }}>
             {columns.map((col) => (
               <TableCell
                 key={col.field}
                 align={col.field === "team" ? "left" : "right"}
+                sx={{ color: "white" }}
               >
                 {col.field === "team" ? division : col.header}
               </TableCell>
@@ -39,7 +39,7 @@ function StandingsTable({ columns, data, division }: StandingsTableProps) {
                   key={col.field}
                   align={col.field === "team" ? "left" : "right"}
                 >
-                  {data[col.field]}
+                  {row[col.field]}
                 </TableCell>
               ))}
             </TableRow>

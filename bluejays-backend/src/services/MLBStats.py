@@ -38,6 +38,10 @@ class MLBService:
                 teams.append(
                     {
                         "team": team_record["team"]["id"],
+                        "abbreviation": team_record["team"]["abbreviation"],
+                        "newsName": team_record["team"]["teamName"].replace(" ", "-").lower(),
+                        "teamName": team_record["team"]["name"],
+                        "divisionRank": team_record["divisionRank"],
                         "wins": team_record["wins"],
                         "losses": team_record["losses"],
                         "winningPercentage": team_record["winningPercentage"],
@@ -48,6 +52,7 @@ class MLBService:
                         "away": find_split_records(team_record, "away")["pct"],
                         "oneRun": find_split_records(team_record, "oneRun")["pct"],
                         "extraInning": find_split_records(team_record, "extraInning")["pct"],
+                        "logo": f"https://www.mlbstatic.com/team-logos/{team_record['team']['id']}.svg",
                     }
                 )
             standings[division_name] = teams

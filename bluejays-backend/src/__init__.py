@@ -1,9 +1,11 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 from src.routes import MLBRoutes
 import requests
 
 def create_app():
     app = Flask(__name__)
+    CORS(app)
 
     app.config.from_object("src.config.Config")
     app.register_blueprint(MLBRoutes.bp, url_prefix="/api/mlb")

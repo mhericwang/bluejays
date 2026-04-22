@@ -1,32 +1,31 @@
-import * as React from "react";
+import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   AppBar,
   Box,
   Toolbar,
   IconButton,
-  Container,
   Button,
   Popover,
   Paper,
   Grid,
   Backdrop,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import HomeBaseLogo from "../assets/homebase-logo.png";
+import { useTeams } from "../hooks/useTeams";
 
 const pages = ["Standings", "Teams", "Leaders"];
 
-// mock data (replace with real MLB data later)
-const teams = [
-  { id: 1, name: "Blue Jays", league: "AL", record: "10-8" },
-  { id: 2, name: "Yankees", league: "AL", record: "12-6" },
-  { id: 3, name: "Dodgers", league: "NL", record: "11-7" },
-];
-
 function TopNavBar() {
-  const [anchorElTeams, setAnchorElTeams] = React.useState<null | HTMLElement>(
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [anchorElTeams, setAnchorElTeams] = useState<null | HTMLElement>(
     null,
   );
+  const teamsData = useTeams();
+  const allTeams = teamsData ? Object.values(teamsData).flat() : [];
 
   const handleOpenTeams = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElTeams(event.currentTarget);
@@ -36,14 +35,14 @@ function TopNavBar() {
     setAnchorElTeams(null);
   };
 
-  const handleClickedTeams = (team: number) => {
-    console.log(team);
+  const handleClickedTeams = (teamId: number) => {
     setAnchorElTeams(null);
+    navigate(`/teams/${teamId}`);
   };
 
   return (
-    <AppBar position="static">
-      <Container>
+    <AppBar position="static" sx={{ mb: 2 }}>
+      <Box sx={{ mx: 2 }}>
         <Toolbar disableGutters>
           <IconButton component="a" href="/" sx={{ p: 0, mr: 2 }}>
             <Box
@@ -56,12 +55,23 @@ function TopNavBar() {
 
           <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "right" }}>
             {pages.map((page) => {
+              const isActive =
+                (page === "Standings" && location.pathname === "/standings") ||
+                (page === "Teams" && location.pathname.startsWith("/teams")) ||
+                (page === "Leaders" && location.pathname === "/leaders");
+
               if (page === "Teams") {
                 return (
                   <Button
                     key={page}
                     onClick={handleOpenTeams}
-                    sx={{ ml: 2, color: "white" }}
+                    sx={{
+                      ml: 2,
+                      color: "white",
+                      borderBottom: isActive ? "3px solid white" : "3px solid transparent",
+                      borderRadius: 0,
+                      pb: isActive ? 0.5 : 0.5,
+                    }}
                   >
                     {page}
                     <ArrowDropDownIcon />
@@ -69,15 +79,27 @@ function TopNavBar() {
                 );
               }
 
+              const route = page === "Standings" ? "/standings" : "/leaders";
               return (
-                <Button key={page} sx={{ ml: 2, color: "white" }}>
+                <Button
+                  key={page}
+                  component={Link}
+                  to={route}
+                  sx={{
+                    ml: 2,
+                    color: "white",
+                    borderBottom: isActive ? "3px solid white" : "3px solid transparent",
+                    borderRadius: 0,
+                    pb: isActive ? 0.5 : 0.5,
+                  }}
+                >
                   {page}
                 </Button>
               );
             })}
           </Box>
         </Toolbar>
-      </Container>
+      </Box>
 
       <Backdrop
         open={Boolean(anchorElTeams)}
@@ -96,17 +118,18 @@ function TopNavBar() {
             sx: {
               mt: 1,
               p: 2,
-              minWidth: 500,
+              width: "fit-content",
+              maxWidth: 600,
             },
           },
         }}
       >
         <Paper elevation={0}>
-          <Grid container>
-            {teams.map((team) => (
+          <Grid container columns={5}>
+            {allTeams.map((team) => (
               <Grid
-                key={team.id}
-                size={2}
+                key={team.team}
+                size={1}
                 sx={{
                   py: 1,
                   cursor: "pointer",
@@ -118,10 +141,17 @@ function TopNavBar() {
                   justifyContent: "center",
                 }}
                 onClick={() => {
-                  handleClickedTeams(team.id);
+                  handleClickedTeams(team.team);
                 }}
               >
-                {team.name}
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <img
+                    src={team.logo}
+                    alt={team.abbreviation}
+                    style={{ width: 24, height: 24, marginRight: 8 }}
+                  />
+                  {team.abbreviation}
+                </Box>
               </Grid>
             ))}
           </Grid>
