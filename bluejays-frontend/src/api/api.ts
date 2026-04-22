@@ -30,3 +30,9 @@ export const fetchNews = async (teamName?: string) => {
   if (!response.ok) throw new Error("Failed to fetch news");
   return response.json();
 };
+
+export const fetchTeamRoster = async (teamId: number) => {
+  const response = await fetch(`${API_URL}/team-roster?team_id=${teamId}`);
+  if (!response.ok) throw new Error("Failed to fetch team roster");
+  return response.json();
+};

@@ -41,7 +41,7 @@ class MLBService:
                     {
                         "team": team_record["team"]["id"],
                         "abbreviation": team_record["team"]["abbreviation"],
-                        "newsName": team_record["team"]["teamName"].replace(" ", "-").lower(),
+                        "newsName": team_record["team"]["teamName"].replace(" ", "").lower(),
                         "teamName": team_record["team"]["name"],
                         "divisionRank": team_record["divisionRank"],
                         "wins": team_record["wins"],
@@ -96,7 +96,48 @@ class MLBService:
         """
         return active roster of provided team
         """
-        return MLBService.get(f"/teams/{team_id}/roster")
+        raw_roster = MLBService.get(
+            f"/teams/{team_id}/roster/active", params={"hydrate": "person(stats(type=season))"}
+        )
+        roster = {"hitters": [], "pitchers": []}
+        for player in raw_roster["roster"]:
+            position_type = player["position"]["type"]
+            player_info = {
+                "id": player["person"]["id"],
+                "firstName": player["person"]["firstName"],
+                "lastName": player["person"]["lastName"],
+                "age": player["person"]["currentAge"],
+                "position": player["position"]["abbreviation"],
+                "jerseyNumber": player["jerseyNumber"],
+                "batSide": player["person"]["batSide"]["code"],
+                "pitchSide": player["person"]["pitchHand"]["code"],
+                "headshot": f"https://content.mlb.com/images/headshots/current/60x60/{player['person']['id']}@2x.png",
+            }
+            if position_type == "Pitcher":
+                pitching_stats = next(
+                    stat for stat in player["person"]["stats"] if stat["group"]["displayName"] == "pitching"
+                )["splits"][0]["stat"]
+                player_info = {**player_info, **pitching_stats}
+                player_info["strikeOutsPercentage"] = round(
+                    (pitching_stats["strikeOuts"] / pitching_stats["battersFaced"]) * 100, 1
+                )
+                player_info["baseOnBallsPercentage"] = round(
+                    (pitching_stats["baseOnBalls"] / pitching_stats["battersFaced"]) * 100, 1
+                )
+                roster["pitchers"].append(player_info)
+            else:
+                hitting_stats = next(
+                    stat for stat in player["person"]["stats"] if stat["group"]["displayName"] == "hitting"
+                )["splits"][0]["stat"]
+                player_info = {**player_info, **hitting_stats}
+                player_info["strikeOutsPercentage"] = round(
+                    (hitting_stats["strikeOuts"] / hitting_stats["plateAppearances"]) * 100, 1
+                )
+                player_info["baseOnBallsPercentage"] = round(
+                    (hitting_stats["baseOnBalls"] / hitting_stats["plateAppearances"]) * 100, 1
+                )
+                roster["hitters"].append(player_info)
+        return roster
 
     @staticmethod
     def get_player_info(player_id):

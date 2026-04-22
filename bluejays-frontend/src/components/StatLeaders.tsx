@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 import { fetchStatLeaders } from "../api/api";
 import type { StatLeadersResponse } from "../types/mlb";
 
-
 const categories = [
   { key: "homeRuns", label: "Home Runs" },
   { key: "onBasePlusSlugging", label: "OPS" },
@@ -21,9 +20,10 @@ const categories = [
 
 interface StatLeadersProps {
   teamId?: number;
+  teamName?: string;
 }
 
-function StatLeaders({ teamId }: StatLeadersProps) {
+function StatLeaders({ teamId, teamName }: StatLeadersProps) {
   const [leaders, setLeaders] = useState<StatLeadersResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ function StatLeaders({ teamId }: StatLeadersProps) {
   }, [teamId]);
 
   return (
-    <Box sx={{ mb: 4 }}>
+    <Box sx={{ my: 4 }}>
       <Box
         sx={{
           display: "flex",
@@ -52,15 +52,17 @@ function StatLeaders({ teamId }: StatLeadersProps) {
         }}
       >
         <Typography variant="h4" sx={{ fontWeight: 700, fontSize: 24 }}>
-          League Leaders
+          {teamName ?? "League"} Leaders
         </Typography>
-        <Link
-          underline="none"
-          sx={{ fontWeight: 600, color: "primary.main", cursor: "pointer" }}
-          onClick={() => navigate("/leaders")}
-        >
-          View All →
-        </Link>
+        {!teamId && (
+          <Link
+            underline="none"
+            sx={{ fontWeight: 600, color: "primary.main", cursor: "pointer" }}
+            onClick={() => navigate("/leaders")}
+          >
+            View All →
+          </Link>
+        )}
       </Box>
       <Box
         sx={{
