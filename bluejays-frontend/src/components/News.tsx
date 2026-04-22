@@ -30,8 +30,8 @@ function News({ teamName, newsName }: NewsProps) {
     loadNews();
   }, [newsName]);
   return (
-    <Box>
-      <Typography variant="h4" sx={{ mb: 2, fontWeight: 500, fontSize: 24 }}>
+    <Box sx={{ mb: 1 }}>
+      <Typography variant="h4" sx={{ mb: 2, fontWeight: 700, fontSize: 24 }}>
         {teamName ?? "MLB"} News
       </Typography>
       <Box

@@ -31,7 +31,7 @@ function Standings({ simplified }: StandingsProps) {
 
   return (
     <Box sx={{ mb: 1 }}>
-      <Typography variant="h4" sx={{ mb: 1, fontWeight: 500, fontSize: 24 }}>
+      <Typography variant="h4" sx={{ mb: 1, fontWeight: 700, fontSize: 24 }}>
         Standings
       </Typography>
       <Grid container spacing={4}>

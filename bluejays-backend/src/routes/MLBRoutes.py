@@ -21,7 +21,7 @@ def stat_leaders():
     hitters = MLBService.get_hitting_leaders(team_id)
     pitchers = MLBService.get_pitching_leaders(team_id)
 
-    return jsonify({"hitters": hitters, "pitchers": pitchers})
+    return jsonify({**hitters, **pitchers})
 
 
 @bp.route("/team-roster", methods=["GET"])

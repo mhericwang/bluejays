@@ -1,9 +1,12 @@
-import React from 'react'
+import { Box } from "@mui/material";
+import StatLeaders from "../components/StatLeaders";
 
 function Leaders() {
   return (
-    <div>Leaders</div>
-  )
+    <Box>
+      <StatLeaders />
+    </Box>
+  );
 }
 
-export default Leaders
+export default Leaders;

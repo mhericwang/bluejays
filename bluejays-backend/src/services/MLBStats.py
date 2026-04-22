@@ -1,5 +1,6 @@
 import requests
 from definitions import MLB_STATS_API_URL
+from ..helpers import format_leader_stats
 
 
 class MLBService:
@@ -23,6 +24,7 @@ class MLBService:
         """
         return all standings data for both american league and national league
         """
+
         # helper to find split records easily
         def find_split_records(records, t):
             return next(record for record in records["records"]["splitRecords"] if record["type"] == t)
@@ -63,20 +65,31 @@ class MLBService:
         """
         return stat leaders for homeruns and OPS
         """
-        params = {"leaderCategories": "homeRuns,onBasePlusSlugging", "statGroup": "hitting"}
+        params = {
+            "leaderCategories": "homeRuns,onBasePlusSlugging",
+            "statGroup": "hitting",
+            "hydrate": "team",
+        }
         if team_id is not None:
             params["teamId"] = team_id
-        return MLBService.get("/stats/leaders", params=params)
+        raw_leaders = MLBService.get("/stats/leaders", params=params)
+        return format_leader_stats(raw_leaders)
 
     @staticmethod
     def get_pitching_leaders(team_id=None):
         """
         return stat leaders for strikeouts and ERA
         """
-        params = {"leaderCategories": "strikeouts,earnedRunAverage", "statGroup": "pitching"}
+        params = {
+            "leaderCategories": "strikeouts,earnedRunAverage",
+            "statGroup": "pitching",
+            "hydrate": "team",
+        }
         if team_id is not None:
             params["teamId"] = team_id
-        return MLBService.get("/stats/leaders", params=params)
+        raw_leaders = MLBService.get("/stats/leaders", params=params)
+
+        return format_leader_stats(raw_leaders)
 
     @staticmethod
     def get_team_roster(team_id):
