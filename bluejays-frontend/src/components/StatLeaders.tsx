@@ -7,19 +7,10 @@ import {
   Link,
   Typography,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { fetchStatLeaders } from "../api/api";
+import type { StatLeadersResponse } from "../types/mlb";
 
-interface StatLeader {
-  player: number;
-  name: string;
-  team: string;
-  value: string | number;
-  headshot: string;
-}
-
-interface StatLeadersResponse {
-  [key: string]: StatLeader[];
-}
 
 const categories = [
   { key: "homeRuns", label: "Home Runs" },
@@ -35,6 +26,7 @@ interface StatLeadersProps {
 function StatLeaders({ teamId }: StatLeadersProps) {
   const [leaders, setLeaders] = useState<StatLeadersResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadLeaders = async () => {
@@ -65,6 +57,7 @@ function StatLeaders({ teamId }: StatLeadersProps) {
         <Link
           underline="none"
           sx={{ fontWeight: 600, color: "primary.main", cursor: "pointer" }}
+          onClick={() => navigate("/leaders")}
         >
           View All →
         </Link>
@@ -72,6 +65,8 @@ function StatLeaders({ teamId }: StatLeadersProps) {
       <Box
         sx={{
           display: "flex",
+          flexDirection: { xs: "column", lg: "row" },
+          overflowX: "auto",
           justifyContent: "center",
           gap: 4,
           pb: 1,
@@ -84,7 +79,7 @@ function StatLeaders({ teamId }: StatLeadersProps) {
           },
           "&::-webkit-scrollbar-thumb": {
             backgroundColor: "rgba(100, 116, 139, 0.4)",
-            borderRadius: 10,
+            borderRadius: 5,
           },
         }}
       >
@@ -100,8 +95,8 @@ function StatLeaders({ teamId }: StatLeadersProps) {
               <Card
                 key={key}
                 sx={{
-                  width: "auto",
-                  minWidth: 300,
+                  flex: 1,
+                  minWidth: 200,
                   backgroundColor: "#1f3756",
                   color: "common.white",
                   border: "1px solid rgba(255,255,255,0.08)",

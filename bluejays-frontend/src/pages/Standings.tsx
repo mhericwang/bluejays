@@ -34,11 +34,11 @@ function Standings({ simplified }: StandingsProps) {
       <Typography variant="h4" sx={{ mb: 1, fontWeight: 700, fontSize: 24 }}>
         Standings
       </Typography>
-      <Grid container spacing={4}>
+      <Grid container spacing={2}>
         {Object.entries(teamsData).map(([division, teams]) => (
           <Grid
             key={division}
-            size={{ md: 6 }}
+            size={{ xs: 12, lg: 6 }}
             sx={{
               display: "flex",
               alignItems: "center",

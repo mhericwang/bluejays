@@ -3,7 +3,7 @@ import { fetchStandings } from '../api/api';
 import type { StandingsByDivision } from '../types/mlb';
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const TeamsContext = createContext<StandingsByDivision | null | undefined>(undefined);
+export const TeamsContext = createContext<StandingsByDivision | null | undefined>({});
 
 export const TeamsProvider = ({ children }: { children: ReactNode }) => {
   const [teams, setTeams] = useState<StandingsByDivision | null>(null);

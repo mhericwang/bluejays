@@ -18,3 +18,16 @@ export interface Team {
 }
 
 export type StandingsByDivision = Record<string, Team[]>;
+
+export interface StatLeader {
+  player: number;
+  rank: string;
+  name: string;
+  team: string;
+  value: string | number;
+  headshot: string;
+};
+
+export interface StatLeadersResponse {
+  [key: string]: StatLeader[];
+};

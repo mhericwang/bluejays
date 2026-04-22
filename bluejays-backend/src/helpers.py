@@ -10,6 +10,7 @@ def format_leader_stats(raw_leaders):
             leaders[stat_category].append(
                 {
                     "player": player["person"]["id"],
+                    "rank": player["rank"],
                     "name": player["person"]["fullName"],
                     "team": player["team"]["abbreviation"],
                     "value": player["value"],

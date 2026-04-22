@@ -11,6 +11,7 @@ import { Routes, Route } from "react-router-dom";
 import HomePage from "./pages/Home";
 import Leaders from "./pages/Leaders";
 import Teams from "./pages/Teams";
+import Players from "./pages/Players";
 
 const theme = createTheme({
   typography: {
@@ -58,6 +59,7 @@ function App() {
           <Route path="/standings" element={<Standings />} />
           <Route path="/leaders" element={<Leaders />} />
           <Route path="/teams/:teamId" element={<Teams />} />
+          <Route path="/players/:playerId" element={ <Players />} />
           <Route
             path="*"
             element={<Typography sx={{ mt: 4 }}>Page not found.</Typography>}
