@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@mui/material";
 import type { Team } from "../types/mlb";
+import { useNavigate } from "react-router-dom";
 
 interface StandingsTableProps {
   columns: { field: string; header: string }[];
@@ -17,6 +18,8 @@ interface StandingsTableProps {
 }
 
 function StandingsTable({ columns, data, division }: StandingsTableProps) {
+  const navigate = useNavigate();
+
   return (
     <TableContainer component={Paper}>
       <Table size="small">
@@ -35,7 +38,7 @@ function StandingsTable({ columns, data, division }: StandingsTableProps) {
         </TableHead>
         <TableBody>
           {data.map((row) => (
-            <TableRow key={row.team}>
+            <TableRow key={row.team} hover sx={{ cursor: "pointer" }} onClick={() => navigate(`/teams/${row.team}`)}>
               {columns.map((col) => (
                 <TableCell
                   key={col.field}
