@@ -40,7 +40,7 @@ def format_pitcher_stats_and_gamelog(raw_stats, raw_gamelog):
                 team_id = split["team"]["id"]
                 team_logo = f"https://www.mlbstatic.com/team-logos/{split['team']['id']}.svg"
             else:
-                team_name = stat["type"]["displayName"]
+                team_name = stat["type"]["displayName"].title()
                 team_id = None
                 team_logo = None
             data["yearlyStats"].append(
@@ -115,7 +115,7 @@ def format_hitter_stats_and_gamelog(raw_stats, raw_gamelog):
                 team_id = split["team"]["id"]
                 team_logo = f"https://www.mlbstatic.com/team-logos/{split['team']['id']}.svg"
             else:
-                team_name = stat["type"]["displayName"]
+                team_name = stat["type"]["displayName"].title()
                 team_id = None
                 team_logo = None
 
