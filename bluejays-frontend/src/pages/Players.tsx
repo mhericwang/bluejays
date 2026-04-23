@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchPlayerDetails } from "../api/api";
@@ -119,14 +119,87 @@ function Players() {
             {playerDetails?.position} | {playerDetails?.teamName}
           </Typography>
         </Box>
+        <Grid
+          container
+          spacing={2}
+          sx={{
+            ml: "auto",
+            display: "flex",
+          }}
+        >
+          <Grid size={2.25}>
+            <Typography variant="subtitle2" sx={{ color: "text.secondary", textAlign: "center" }}>
+              B / T
+            </Typography>
+          </Grid>
+          <Grid size={2.25}>
+            <Typography variant="subtitle2" sx={{ color: "text.secondary", textAlign: "center" }}>
+              Age
+            </Typography>
+          </Grid>
+          <Grid size={2.25}>
+            <Typography variant="subtitle2" sx={{ color: "text.secondary", textAlign: "center" }}>
+              H
+            </Typography>
+          </Grid>
+          <Grid size={2.25}>
+            <Typography variant="subtitle2" sx={{ color: "text.secondary", textAlign: "center" }}>
+              W
+            </Typography>
+          </Grid>
+          <Grid size={3}>
+            <Typography variant="subtitle2" sx={{ color: "text.secondary", textAlign: "center" }}>
+              Debut
+            </Typography>
+          </Grid>
+          <Grid size={2.25}>
+            <Typography variant="h6" sx={{ fontWeight: 700, textAlign: "center" }}>
+              {playerDetails?.batsAndThrows}
+            </Typography>
+          </Grid>
+          <Grid size={2.25}>
+            <Typography variant="h6" sx={{ fontWeight: 700, textAlign: "center" }}>
+              {playerDetails?.age}
+            </Typography>
+          </Grid>
+          <Grid size={2.25}>
+            <Typography variant="h6" sx={{ fontWeight: 700, textAlign: "center" }}>
+              {playerDetails?.height}
+            </Typography>
+          </Grid>
+          <Grid size={2.25}>
+            <Typography variant="h6" sx={{ fontWeight: 700, textAlign: "center" }}>
+              {playerDetails?.weight}
+            </Typography>
+          </Grid>
+          <Grid size={3}>
+            <Typography variant="h6" sx={{ fontWeight: 700, textAlign: "center" }}>
+              {playerDetails?.mlbDebutDate}
+            </Typography>
+          </Grid>
+        </Grid>
       </Box>
       <Box sx={{ mb: 2 }}>
-        <PlayerTable data={playerDetails?.yearlyStats || []} columns={playerDetails?.position !== "P" ? SEASON_COLUMNS_HITTER : SEASON_COLUMNS_PITCHER} />
+        <PlayerTable
+          data={playerDetails?.yearlyStats || []}
+          columns={
+            playerDetails?.position !== "P"
+              ? SEASON_COLUMNS_HITTER
+              : SEASON_COLUMNS_PITCHER
+          }
+        />
       </Box>
       <Typography variant="h6" sx={{ mb: 1 }}>
         Recent Games
       </Typography>
-      <GameLogsTable data={playerDetails?.gamelogs || []} columns={playerDetails?.position !== "P" ? GAMELOG_COLUMNS_HITTER : GAMELOG_COLUMNS_PITCHER} />
+      <GameLogsTable
+        data={playerDetails?.gamelogs || []}
+        columns={
+          playerDetails?.position !== "P"
+            ? GAMELOG_COLUMNS_HITTER
+            : GAMELOG_COLUMNS_PITCHER
+        }
+      />
     </Box>
   );
 }

@@ -211,7 +211,7 @@ class MLBService:
             "mlbDebutDate": raw_player["mlbDebutDate"],
             "height": raw_player["height"],
             "weight": raw_player["weight"],
-            "batsAndThrows": f"{raw_player['batSide']['code']}/{raw_player['pitchHand']['code']}",
+            "batsAndThrows": f"{raw_player['batSide']['code']} / {raw_player['pitchHand']['code']}",
             "teamName": raw_player["currentTeam"]["name"],
             "headshot": f"https://content.mlb.com/images/headshots/current/60x60/{raw_player['id']}@2x.png",
             "yearlyStats": [],
