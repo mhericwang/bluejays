@@ -1,4 +1,4 @@
-# bluejays
+# Home Base
 Blue Jays homebase dashboard
 
 ## Local Development Setup
