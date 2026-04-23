@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import type { StatLeader } from "../types/mlb";
+import { useNavigate } from "react-router-dom";
 
 interface StatLeadersTableProps {
   leaders: StatLeader[];
@@ -23,6 +24,8 @@ const TABLE_CELL_SX = {
 };
 
 function StatLeadersTable({ leaders, label }: StatLeadersTableProps) {
+  const navigate = useNavigate();
+
   return (
     <Box sx={{ mb: 4 }}>
       <Box
@@ -41,15 +44,15 @@ function StatLeadersTable({ leaders, label }: StatLeadersTableProps) {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={TABLE_CELL_SX}>Rank</TableCell>
+              <TableCell sx={TABLE_CELL_SX}>#</TableCell>
               <TableCell sx={TABLE_CELL_SX}>Player</TableCell>
               <TableCell sx={TABLE_CELL_SX}>Team</TableCell>
-              <TableCell sx={TABLE_CELL_SX}>Value</TableCell>
+              <TableCell sx={TABLE_CELL_SX}>Val</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {leaders.map((leader, index) => (
-              <TableRow key={index}>
+              <TableRow key={index} hover sx={{ cursor: "pointer" }} onClick={() => navigate(`/players/${leader.player}`)}>
                 <TableCell sx={TABLE_CELL_SX}>{leader.rank}</TableCell>
                 <TableCell
                   sx={{

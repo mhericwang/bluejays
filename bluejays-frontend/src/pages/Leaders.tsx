@@ -16,11 +16,18 @@ interface StatLeadersResponse {
   [key: string]: StatLeader[];
 }
 
-const categories = [
+const HITTING_CATEGORIES = [
   { key: "homeRuns", label: "Home Runs" },
   { key: "onBasePlusSlugging", label: "OPS" },
+  { key: "hits", label: "Hits" },
+  { key: "stolenBases", label: "Stolen Bases" },
+];
+
+const PITCHING_CATEGORIES = [
   { key: "strikeouts", label: "Strikeouts" },
   { key: "earnedRunAverage", label: "ERA" },
+  { key: "wins", label: "Wins" },
+  { key: "saves", label: "Saves" },
 ];
 
 function Leaders() {
@@ -50,14 +57,32 @@ function Leaders() {
 
   return (
     <Box sx={{ mb: 4 }}>
-      <Typography variant="h4" sx={{ mb: 4, fontWeight: 700, fontSize: 24 }}>
-        League Leaders
+      <Typography variant="h5" sx={{ mb: 2, fontWeight: 700, fontSize: 20 }}>
+        Hitting Leaders
       </Typography>
       <Grid container spacing={2}>
-        {categories.map(({ key, label }) => (
+        {HITTING_CATEGORIES.map(({ key, label }) => (
           <Grid
             key={key}
-            size={{ xs: 12, md: 6, xl: 3 }}
+            size={{ xs: 12, sm: 6, lg: 3 }}
+            sx={{
+              display: "flex",
+              alignItems: "top",
+              justifyContent: "center",
+            }}
+          >
+            <StatLeadersTable leaders={leaders[key] || []} label={label} />
+          </Grid>
+        ))}
+      </Grid>
+      <Typography variant="h5" sx={{ mb: 2, mt: 4, fontWeight: 700, fontSize: 20 }}>
+        Pitching Leaders
+      </Typography>
+      <Grid container spacing={2}>
+        {PITCHING_CATEGORIES.map(({ key, label }) => (
+          <Grid
+            key={key}
+            size={{ xs: 12, sm: 6, lg: 3 }}
             sx={{
               display: "flex",
               alignItems: "top",

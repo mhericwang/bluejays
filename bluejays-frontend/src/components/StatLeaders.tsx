@@ -112,7 +112,10 @@ function StatLeaders({ teamId, teamName }: StatLeadersProps) {
                     {label}
                   </Typography>
                 </Box>
-                <CardContent sx={{ px: 2, py: 2, pb: 2 }}>
+                <CardContent
+                  sx={{ px: 2, py: 2, pb: 2, cursor: "pointer" }}
+                  onClick={() => navigate(`/players/${leader.player}`)}
+                >
                   <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                     <CardMedia
                       component="img"
@@ -124,6 +127,7 @@ function StatLeaders({ teamId, teamName }: StatLeadersProps) {
                         borderRadius: "50%",
                         objectFit: "cover",
                         backgroundColor: "#ffffff",
+                        cursor: "pointer",
                       }}
                     />
                     <Box sx={{ flex: 1, minWidth: 0 }}>

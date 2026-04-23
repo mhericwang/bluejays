@@ -31,20 +31,24 @@ def format_pitcher_stats_and_gamelog(raw_stats, raw_gamelog):
 
     for stat in raw_stats:
         for split in stat["splits"]:
+            if stat["type"]["displayName"] != "career" and "numTeams" in split and split["numTeams"] > 1:
+                team_name = "Multiple Teams"
+                team_id = None
+                team_logo = None
+            elif "team" in split and stat["type"]["displayName"] != "career":
+                team_name = split["team"]["name"]
+                team_id = split["team"]["id"]
+                team_logo = f"https://www.mlbstatic.com/team-logos/{split['team']['id']}.svg"
+            else:
+                team_name = stat["type"]["displayName"]
+                team_id = None
+                team_logo = None
             data["yearlyStats"].append(
                 {
                     "year": split["season"] if stat["type"]["displayName"] != "career" else None,
-                    "teamId": split["team"]["id"] if stat["type"]["displayName"] == "yearByYear" else None,
-                    "teamLogo": (
-                        f"https://www.mlbstatic.com/team-logos/{split['team']['id']}.svg"
-                        if stat["type"]["displayName"] == "yearByYear"
-                        else None
-                    ),
-                    "teamName": (
-                        split["team"]["name"]
-                        if stat["type"]["displayName"] == "yearByYear"
-                        else stat["type"]["displayName"]
-                    ),
+                    "teamId": team_id,
+                    "teamLogo": team_logo,
+                    "teamName": team_name,
                     "gamesPitched": split["stat"]["gamesPitched"],
                     "inningsPitched": split["stat"]["inningsPitched"],
                     "battersFaced": split["stat"]["battersFaced"],
@@ -56,7 +60,11 @@ def format_pitcher_stats_and_gamelog(raw_stats, raw_gamelog):
                     "strikeOutsPercentage": f"{round((split['stat']['strikeOuts'] / split['stat']['battersFaced']) * 100, 1)}%",
                     "baseOnBallsPercentage": f"{round((split['stat']['baseOnBalls'] / split['stat']['battersFaced']) * 100, 1)}%",
                     "strikeoutsPer9Inn": split["stat"]["strikeoutsPer9Inn"],
-                    "avg": f"{round(split['stat']['avg'], 3)}"[1:] if type(split["stat"]["avg"]) == float else split["stat"]["avg"],
+                    "avg": (
+                        f"{round(split['stat']['avg'], 3)}"[1:]
+                        if type(split["stat"]["avg"]) == float
+                        else split["stat"]["avg"]
+                    ),
                     "whip": split["stat"]["whip"],
                     "hits": split["stat"]["hits"],
                     "hitByPitch": split["stat"]["hitByPitch"],
@@ -98,20 +106,25 @@ def format_hitter_stats_and_gamelog(raw_stats, raw_gamelog):
 
     for stat in raw_stats:
         for split in stat["splits"]:
+            if stat["type"]["displayName"] != "career" and "numTeams" in split and split["numTeams"] > 1:
+                team_name = "Multiple Teams"
+                team_id = None
+                team_logo = None
+            elif "team" in split and stat["type"]["displayName"] != "career":
+                team_name = split["team"]["name"]
+                team_id = split["team"]["id"]
+                team_logo = f"https://www.mlbstatic.com/team-logos/{split['team']['id']}.svg"
+            else:
+                team_name = stat["type"]["displayName"]
+                team_id = None
+                team_logo = None
+
             data["yearlyStats"].append(
                 {
                     "year": split["season"] if stat["type"]["displayName"] != "career" else None,
-                    "teamId": split["team"]["id"] if stat["type"]["displayName"] == "yearByYear" else None,
-                    "teamLogo": (
-                        f"https://www.mlbstatic.com/team-logos/{split['team']['id']}.svg"
-                        if stat["type"]["displayName"] == "yearByYear"
-                        else None
-                    ),
-                    "teamName": (
-                        split["team"]["name"]
-                        if stat["type"]["displayName"] == "yearByYear"
-                        else stat["type"]["displayName"]
-                    ),
+                    "teamId": team_id,
+                    "teamLogo": team_logo,
+                    "teamName": team_name,
                     "gamesPlayed": split["stat"]["gamesPlayed"],
                     "plateAppearances": split["stat"]["plateAppearances"],
                     "hits": split["stat"]["hits"],

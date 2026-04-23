@@ -41,7 +41,11 @@ class MLBService:
                     {
                         "team": team_record["team"]["id"],
                         "abbreviation": team_record["team"]["abbreviation"],
-                        "newsName": team_record["team"]["teamName"].replace(" ", "").lower(),
+                        "newsName": (
+                            team_record["team"]["teamName"].replace(" ", "").lower()
+                            if team_record["team"]["abbreviation"] != "AZ"
+                            else "dbacks"
+                        ),
                         "teamName": team_record["team"]["name"],
                         "divisionRank": team_record["divisionRank"],
                         "wins": team_record["wins"],
@@ -66,7 +70,7 @@ class MLBService:
         return stat leaders for homeruns and OPS
         """
         params = {
-            "leaderCategories": "homeRuns,onBasePlusSlugging",
+            "leaderCategories": "homeRuns,onBasePlusSlugging,hits,stolenBases",
             "statGroup": "hitting",
             "hydrate": "team",
         }
@@ -81,7 +85,7 @@ class MLBService:
         return stat leaders for strikeouts and ERA
         """
         params = {
-            "leaderCategories": "strikeouts,earnedRunAverage",
+            "leaderCategories": "strikeouts,earnedRunAverage,wins,saves",
             "statGroup": "pitching",
             "hydrate": "team",
         }
@@ -114,33 +118,72 @@ class MLBService:
                 "headshot": f"https://content.mlb.com/images/headshots/current/60x60/{player['person']['id']}@2x.png",
             }
             if position_type == "Pitcher":
-                pitching_stats = next(
-                    stat for stat in player["person"]["stats"] if stat["group"]["displayName"] == "pitching"
-                )["splits"][0]["stat"]
-                player_info = {**player_info, **pitching_stats}
-                player_info["strikeOutsPercentage"] = f"{round(
-                    (pitching_stats['strikeOuts'] / pitching_stats['battersFaced']) * 100, 1
-                )}%"
-                player_info["baseOnBallsPercentage"] = f"{round(
-                    (pitching_stats['baseOnBalls'] / pitching_stats['battersFaced']) * 100, 1
-                )}%"
-                roster["pitchers"].append(player_info)
+                try:
+                    pitching_stats = next(
+                        stat
+                        for stat in player["person"]["stats"]
+                        if stat["group"]["displayName"] == "pitching"
+                    )["splits"][0]["stat"]
+                    player_info = {**player_info, **pitching_stats}
+                    player_info["strikeOutsPercentage"] = (
+                        f"{round(
+                        (pitching_stats['strikeOuts'] / pitching_stats['battersFaced']) * 100, 1
+                    )}%"
+                    )
+                    player_info["baseOnBallsPercentage"] = (
+                        f"{round(
+                        (pitching_stats['baseOnBalls'] / pitching_stats['battersFaced']) * 100, 1
+                    )}%"
+                    )
+                    roster["pitchers"].append(player_info)
+                except Exception:
+                    player_info = {
+                        **player_info,
+                        "gamesPitched": 0,
+                        "inningsPitched": 0,
+                        "battersFaced": 0,
+                        "era": 0,
+                        "wins": 0,
+                        "losses": 0,
+                        "strikeOuts": 0,
+                        "baseOnBalls": 0,
+                        "strikeOutsPercentage": "0%",
+                        "baseOnBallsPercentage": "0%",
+                    }
             else:
-                hitting_stats = next(
-                    stat for stat in player["person"]["stats"] if stat["group"]["displayName"] == "hitting"
-                )["splits"][0]["stat"]
-                player_info = {**player_info, **hitting_stats}
-                player_info["strikeOutsPercentage"] = (
-                    f"{round(
-                    (hitting_stats['strikeOuts'] / hitting_stats['plateAppearances']) * 100, 1
-                )}%"
-                )
-                player_info["baseOnBallsPercentage"] = (
-                    f"{round(
-                    (hitting_stats['baseOnBalls'] / hitting_stats['plateAppearances']) * 100, 1
-                )}%"
-                )
-                roster["hitters"].append(player_info)
+                try:
+                    hitting_stats = next(
+                        stat
+                        for stat in player["person"]["stats"]
+                        if stat["group"]["displayName"] == "hitting"
+                    )["splits"][0]["stat"]
+                    player_info = {**player_info, **hitting_stats}
+                    player_info["strikeOutsPercentage"] = (
+                        f"{round(
+                        (hitting_stats['strikeOuts'] / hitting_stats['plateAppearances']) * 100, 1
+                    )}%"
+                    )
+                    player_info["baseOnBallsPercentage"] = (
+                        f"{round(
+                        (hitting_stats['baseOnBalls'] / hitting_stats['plateAppearances']) * 100, 1
+                    )}%"
+                    )
+                    roster["hitters"].append(player_info)
+                except Exception:
+                    player_info = {
+                        **player_info,
+                        "games": 0,
+                        "atBats": 0,
+                        "runs": 0,
+                        "hits": 0,
+                        "homeRuns": 0,
+                        "runsBattedIn": 0,
+                        "battingAverage": 0,
+                        "strikeOuts": 0,
+                        "baseOnBalls": 0,
+                        "strikeOutsPercentage": "0%",
+                        "baseOnBallsPercentage": "0%",
+                    }
         return roster
 
     @staticmethod
@@ -158,7 +201,6 @@ class MLBService:
 
         raw_player = response["people"][0]
         raw_gamelog = gamelog_response["people"][0]["stats"][0]
-
 
         player = {
             "id": raw_player["id"],

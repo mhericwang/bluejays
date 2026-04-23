@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@mui/material";
 import type { RosterHitter, RosterPitcher } from "../types/mlb";
+import { useNavigate } from "react-router-dom";
 
 interface TeamRosterTableProps {
   columns: { field: string; header: string }[];
@@ -16,6 +17,8 @@ interface TeamRosterTableProps {
 }
 
 function TeamRosterTable({ columns, data }: TeamRosterTableProps) {
+  const navigate = useNavigate();
+
   return (
     <TableContainer component={Paper}>
       <Table size="small">
@@ -58,7 +61,7 @@ function TeamRosterTable({ columns, data }: TeamRosterTableProps) {
         </TableHead>
         <TableBody>
           {data.map((row: RosterHitter | RosterPitcher) => (
-            <TableRow key={row.id}>
+            <TableRow key={row.id} hover sx={{ cursor: "pointer" }} onClick={() => navigate(`/players/${row.id}`)}>
               {columns.map((col) => (
                 <TableCell
                   key={col.field}
